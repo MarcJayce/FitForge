@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 14.3% 4.1%;
+    --muted: 60 4.8% 95.9%;
+    --muted-foreground: 25 5.3% 44.7%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14.3% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 14.3% 4.1%;
+    --border: 20 5.9% 90%;
+    --input: 20 5.9% 90%;
+    --primary: 207 90% 54%;
+    --primary-foreground: 211 100% 99%;
+    --secondary: 60 4.8% 95.9%;
+    --secondary-foreground: 24 9.8% 10%;
+    --accent: 60 4.8% 95.9%;
+    --accent-foreground: 24 9.8% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --ring: 20 14.3% 4.1%;
+    --radius: 0.5rem;
+
+    /* Custom chart colors */
+    --chart-1: 207 90% 54%;
+    --chart-2: 91 100% 45%;
+    --chart-3: 45 93% 47%;
+    --chart-4: 0 84% 60%;
+    --chart-5: 262 83% 58%;
+
+    /* Custom sidebar colors */
+    --sidebar-background: 240 10% 3.9%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 207 90% 54%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 91 100% 45%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 240 4.9% 83.9%;
+  }
+
+  /* Always use dark theme */
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --primary: 207 90% 54%;
+    --primary-foreground: 211 100% 99%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --accent: 91 100% 45%;
+    --accent-foreground: 240 10% 3.9%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --ring: 240 4.9% 83.9%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans bg-background text-foreground;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+  }
+}
+
+/* Progress ring styles */
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring__circle {
+  transition: stroke-dashoffset 0.35s;
+  transform-origin: 50% 50%;
+}
+
+/* Card hover effects */
+.card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+/* Custom gradients */
+.gradient-blue {
+  background: linear-gradient(135deg, rgba(0,229,255,0.8) 0%, rgba(0,229,255,0.4) 100%);
+}
+
+.gradient-green {
+  background: linear-gradient(135deg, rgba(174,234,0,0.8) 0%, rgba(174,234,0,0.4) 100%);
+}
+
+.gradient-mixed {
+  background: linear-gradient(135deg, rgba(0,229,255,0.8) 0%, rgba(174,234,0,0.8) 100%);
+}
+
+/* Offline indicator */
+.offline-indicator {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Tab navigation animations */
+.tab-indicator {
+  transition: transform 0.3s ease;
+}
+
+/* Exercise list animations */
+.exercise-item {
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.exercise-item:hover {
+  transform: translateX(5px);
+}
+
+/* Input animations */
+.input-animation {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-animation:focus {
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 2px hsla(var(--primary), 0.3);
+}
+
+/* Bar chart animations */
+.bar-animation {
+  transition: height 0.5s ease;
+}
