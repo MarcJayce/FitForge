@@ -1,4 +1,5 @@
 import { pgTable, text, serial, integer, boolean, json, timestamp, real } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -122,6 +123,58 @@ export const insertProgressLogSchema = createInsertSchema(progressLogs).omit({
   id: true,
   date: true,
 });
+
+// Define relations
+export const usersRelations = relations(users, ({ many }) => ({
+  workoutPrograms: many(workoutPrograms),
+  foodItems: many(foodItems),
+  mealLogs: many(mealLogs),
+  progressLogs: many(progressLogs),
+}));
+
+export const workoutProgramsRelations = relations(workoutPrograms, ({ one, many }) => ({
+  user: one(users, {
+    fields: [workoutPrograms.userId],
+    references: [users.id],
+  }),
+  workouts: many(workouts),
+}));
+
+export const workoutsRelations = relations(workouts, ({ one, many }) => ({
+  program: one(workoutPrograms, {
+    fields: [workouts.programId],
+    references: [workoutPrograms.id],
+  }),
+  exercises: many(exercises),
+}));
+
+export const exercisesRelations = relations(exercises, ({ one }) => ({
+  workout: one(workouts, {
+    fields: [exercises.workoutId],
+    references: [workouts.id],
+  }),
+}));
+
+export const foodItemsRelations = relations(foodItems, ({ one }) => ({
+  user: one(users, {
+    fields: [foodItems.userId],
+    references: [users.id],
+  }),
+}));
+
+export const mealLogsRelations = relations(mealLogs, ({ one }) => ({
+  user: one(users, {
+    fields: [mealLogs.userId],
+    references: [users.id],
+  }),
+}));
+
+export const progressLogsRelations = relations(progressLogs, ({ one }) => ({
+  user: one(users, {
+    fields: [progressLogs.userId],
+    references: [users.id],
+  }),
+}));
 
 // Define types
 export type User = typeof users.$inferSelect;

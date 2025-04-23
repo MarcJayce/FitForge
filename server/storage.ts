@@ -5,8 +5,17 @@ import {
   Exercise, InsertExercise,
   FoodItem, InsertFoodItem,
   MealLog, InsertMealLog,
-  ProgressLog, InsertProgressLog
+  ProgressLog, InsertProgressLog,
+  users,
+  workoutPrograms,
+  workouts,
+  exercises,
+  foodItems,
+  mealLogs,
+  progressLogs
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, and, gte, lte } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -487,4 +496,309 @@ export class MemStorage implements IStorage {
   }
 }
 
+export class DatabaseStorage implements IStorage {
+  // User Methods
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const [newUser] = await db.insert(users).values(user).returning();
+    return newUser;
+  }
+
+  async updateUser(id: number, userData: Partial<User>): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
+      .set(userData)
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser;
+  }
+
+  // Workout Program Methods
+  async getWorkoutPrograms(userId: number): Promise<WorkoutProgram[]> {
+    return await db
+      .select()
+      .from(workoutPrograms)
+      .where(eq(workoutPrograms.userId, userId));
+  }
+
+  async getWorkoutProgram(id: number): Promise<WorkoutProgram | undefined> {
+    const [program] = await db
+      .select()
+      .from(workoutPrograms)
+      .where(eq(workoutPrograms.id, id));
+    return program;
+  }
+
+  async createWorkoutProgram(program: InsertWorkoutProgram): Promise<WorkoutProgram> {
+    const [newProgram] = await db
+      .insert(workoutPrograms)
+      .values(program)
+      .returning();
+    return newProgram;
+  }
+
+  async updateWorkoutProgram(id: number, programData: Partial<WorkoutProgram>): Promise<WorkoutProgram | undefined> {
+    const [updatedProgram] = await db
+      .update(workoutPrograms)
+      .set(programData)
+      .where(eq(workoutPrograms.id, id))
+      .returning();
+    return updatedProgram;
+  }
+
+  async deleteWorkoutProgram(id: number): Promise<boolean> {
+    const result = await db
+      .delete(workoutPrograms)
+      .where(eq(workoutPrograms.id, id));
+    return !!result;
+  }
+
+  // Workout Methods
+  async getWorkouts(programId: number): Promise<Workout[]> {
+    return await db
+      .select()
+      .from(workouts)
+      .where(eq(workouts.programId, programId));
+  }
+
+  async getWorkout(id: number): Promise<Workout | undefined> {
+    const [workout] = await db
+      .select()
+      .from(workouts)
+      .where(eq(workouts.id, id));
+    return workout;
+  }
+
+  async createWorkout(workout: InsertWorkout): Promise<Workout> {
+    const [newWorkout] = await db
+      .insert(workouts)
+      .values(workout)
+      .returning();
+    return newWorkout;
+  }
+
+  async updateWorkout(id: number, workoutData: Partial<Workout>): Promise<Workout | undefined> {
+    const [updatedWorkout] = await db
+      .update(workouts)
+      .set(workoutData)
+      .where(eq(workouts.id, id))
+      .returning();
+    return updatedWorkout;
+  }
+
+  async deleteWorkout(id: number): Promise<boolean> {
+    const result = await db
+      .delete(workouts)
+      .where(eq(workouts.id, id));
+    return !!result;
+  }
+
+  // Exercise Methods
+  async getExercises(workoutId: number): Promise<Exercise[]> {
+    return await db
+      .select()
+      .from(exercises)
+      .where(eq(exercises.workoutId, workoutId));
+  }
+
+  async getExercise(id: number): Promise<Exercise | undefined> {
+    const [exercise] = await db
+      .select()
+      .from(exercises)
+      .where(eq(exercises.id, id));
+    return exercise;
+  }
+
+  async createExercise(exercise: InsertExercise): Promise<Exercise> {
+    const [newExercise] = await db
+      .insert(exercises)
+      .values(exercise)
+      .returning();
+    return newExercise;
+  }
+
+  async updateExercise(id: number, exerciseData: Partial<Exercise>): Promise<Exercise | undefined> {
+    const [updatedExercise] = await db
+      .update(exercises)
+      .set(exerciseData)
+      .where(eq(exercises.id, id))
+      .returning();
+    return updatedExercise;
+  }
+
+  async deleteExercise(id: number): Promise<boolean> {
+    const result = await db
+      .delete(exercises)
+      .where(eq(exercises.id, id));
+    return !!result;
+  }
+
+  // Food Item Methods
+  async getFoodItems(userId: number): Promise<FoodItem[]> {
+    return await db
+      .select()
+      .from(foodItems)
+      .where(eq(foodItems.userId, userId));
+  }
+
+  async getFoodItem(id: number): Promise<FoodItem | undefined> {
+    const [foodItem] = await db
+      .select()
+      .from(foodItems)
+      .where(eq(foodItems.id, id));
+    return foodItem;
+  }
+
+  async getFoodItemByBarcode(barcode: string): Promise<FoodItem | undefined> {
+    const [foodItem] = await db
+      .select()
+      .from(foodItems)
+      .where(eq(foodItems.barcode, barcode));
+    return foodItem;
+  }
+
+  async createFoodItem(foodItem: InsertFoodItem): Promise<FoodItem> {
+    const [newFoodItem] = await db
+      .insert(foodItems)
+      .values(foodItem)
+      .returning();
+    return newFoodItem;
+  }
+
+  async updateFoodItem(id: number, foodItemData: Partial<FoodItem>): Promise<FoodItem | undefined> {
+    const [updatedFoodItem] = await db
+      .update(foodItems)
+      .set(foodItemData)
+      .where(eq(foodItems.id, id))
+      .returning();
+    return updatedFoodItem;
+  }
+
+  async deleteFoodItem(id: number): Promise<boolean> {
+    const result = await db
+      .delete(foodItems)
+      .where(eq(foodItems.id, id));
+    return !!result;
+  }
+
+  // Meal Log Methods
+  async getMealLogs(userId: number, date?: Date): Promise<MealLog[]> {
+    let query = db
+      .select()
+      .from(mealLogs)
+      .where(eq(mealLogs.userId, userId));
+    
+    if (date) {
+      // This is a simplified date check, in production you would use more accurate date comparison
+      const dateStr = date.toISOString().split('T')[0];
+      // Filter by date - this assumes the date column is a timestamp/date type
+      // and that you want to match logs from that calendar day
+      query = query.where(
+        eq(
+          // Extract the date part for comparison
+          mealLogs.date.cast("date"), 
+          dateStr
+        )
+      );
+    }
+    
+    return await query;
+  }
+
+  async getMealLog(id: number): Promise<MealLog | undefined> {
+    const [mealLog] = await db
+      .select()
+      .from(mealLogs)
+      .where(eq(mealLogs.id, id));
+    return mealLog;
+  }
+
+  async createMealLog(mealLog: InsertMealLog): Promise<MealLog> {
+    const [newMealLog] = await db
+      .insert(mealLogs)
+      .values(mealLog)
+      .returning();
+    return newMealLog;
+  }
+
+  async updateMealLog(id: number, mealLogData: Partial<MealLog>): Promise<MealLog | undefined> {
+    const [updatedMealLog] = await db
+      .update(mealLogs)
+      .set(mealLogData)
+      .where(eq(mealLogs.id, id))
+      .returning();
+    return updatedMealLog;
+  }
+
+  async deleteMealLog(id: number): Promise<boolean> {
+    const result = await db
+      .delete(mealLogs)
+      .where(eq(mealLogs.id, id));
+    return !!result;
+  }
+
+  // Progress Log Methods
+  async getProgressLogs(userId: number, startDate?: Date, endDate?: Date): Promise<ProgressLog[]> {
+    let query = db
+      .select()
+      .from(progressLogs)
+      .where(eq(progressLogs.userId, userId));
+    
+    if (startDate) {
+      query = query.where(gte(progressLogs.date, startDate));
+    }
+    
+    if (endDate) {
+      query = query.where(lte(progressLogs.date, endDate));
+    }
+    
+    return await query;
+  }
+
+  async getProgressLog(id: number): Promise<ProgressLog | undefined> {
+    const [progressLog] = await db
+      .select()
+      .from(progressLogs)
+      .where(eq(progressLogs.id, id));
+    return progressLog;
+  }
+
+  async createProgressLog(progressLog: InsertProgressLog): Promise<ProgressLog> {
+    const [newProgressLog] = await db
+      .insert(progressLogs)
+      .values(progressLog)
+      .returning();
+    return newProgressLog;
+  }
+
+  async updateProgressLog(id: number, progressLogData: Partial<ProgressLog>): Promise<ProgressLog | undefined> {
+    const [updatedProgressLog] = await db
+      .update(progressLogs)
+      .set(progressLogData)
+      .where(eq(progressLogs.id, id))
+      .returning();
+    return updatedProgressLog;
+  }
+
+  async deleteProgressLog(id: number): Promise<boolean> {
+    const result = await db
+      .delete(progressLogs)
+      .where(eq(progressLogs.id, id));
+    return !!result;
+  }
+}
+
+// Uncomment this line to use the database storage
+// export const storage = new DatabaseStorage();
+
+// Using in-memory storage for now until we migrate the data
 export const storage = new MemStorage();
