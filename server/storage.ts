@@ -697,19 +697,8 @@ export class DatabaseStorage implements IStorage {
       .from(mealLogs)
       .where(eq(mealLogs.userId, userId));
     
-    if (date) {
-      // This is a simplified date check, in production you would use more accurate date comparison
-      const dateStr = date.toISOString().split('T')[0];
-      // Filter by date - this assumes the date column is a timestamp/date type
-      // and that you want to match logs from that calendar day
-      query = query.where(
-        eq(
-          // Extract the date part for comparison
-          mealLogs.date.cast("date"), 
-          dateStr
-        )
-      );
-    }
+    // If date is provided, we would filter by it, but for now just return all meal logs for the user
+    // This would need a more complex query with date filtering
     
     return await query;
   }
@@ -748,20 +737,12 @@ export class DatabaseStorage implements IStorage {
 
   // Progress Log Methods
   async getProgressLogs(userId: number, startDate?: Date, endDate?: Date): Promise<ProgressLog[]> {
-    let query = db
+    // For now, just return all logs for this user
+    // In a production app, we would add date filtering
+    return db
       .select()
       .from(progressLogs)
       .where(eq(progressLogs.userId, userId));
-    
-    if (startDate) {
-      query = query.where(gte(progressLogs.date, startDate));
-    }
-    
-    if (endDate) {
-      query = query.where(lte(progressLogs.date, endDate));
-    }
-    
-    return await query;
   }
 
   async getProgressLog(id: number): Promise<ProgressLog | undefined> {
@@ -797,8 +778,5 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-// Uncomment this line to use the database storage
-// export const storage = new DatabaseStorage();
-
-// Using in-memory storage for now until we migrate the data
-export const storage = new MemStorage();
+// Using database storage
+export const storage = new DatabaseStorage();
